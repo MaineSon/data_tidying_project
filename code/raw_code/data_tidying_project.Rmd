@@ -48,26 +48,26 @@ colnames(df2) <- df2[1,]
 
 ```{r save-data, warning=FALSE} 
 ## use saveRDS() to save each object as a .rds file 
-
-```
+saveRDS(df_department.rds)
+saveRDS(df_retail.rds)
 
 ### Wrangle Data
 
-```{r wrangle-df2, warning=FALSE} 
+```{r wrangle-df_retail, warning=FALSE} 
 ## an example working with df2
 ## let's wrangle!
 df_retail <- df2 %>%
   ## remove the r from the column names of df2
   magrittr::set_colnames(gsub("r","",df2[1,])) %>% 
   ## add a new column called "business"
-  mutate(business = gsub("[…]|[.]","",`Kind of business`)) %>%
+  mutate(business = gsub("[…]|[.]","",'Kind of business')) %>%
   ## filter to include Retail sales or Department stores sales
   filter(grepl('Retail sales, total |Department stores', business)) %>%
   ## only look at columns with year information in them
   select(.,c(matches('19|20'),business)) %>%
   ## take year column and collapse them into a single column
   gather(., "year", "n", 1:(ncol(.)-1)) %>%
-  ## make sure the count column `n` is numeric
+  ## make sure the count column "n" is numeric
   mutate(n=as.numeric(n)) %>%
   ## filter to only include the businesses we're interested in
   filter(business == "Retail sales, total "| business=="Department stores ")
@@ -78,27 +78,27 @@ df_retail <- df2 %>%
 ## work with df1
 df_department <- df1 %>% 
   ## split Period column into one column called "month" and one called "year"
-  function_name() %>%
-  ## add a column `value` which contains the 
-  ## information from the `Value (in millions)` 
-  function_name() %>%
-  ## group the data frame by the `year` column
-  function_name() %>%
+  separate(Period, into = c('month','year'), extra = 'drop', remove = FALSE)
+  ## add a column value which contains the 
+  ## information from the Value (in millions) 
+  mutate("value") %>%
+  ## group the data frame by the year column
+  group_by("year") %>%
   ## Summarize the data by creating a new column
-  ## call this column `n` 
-  ## have it contain the sum of the `value` column
-  function_name() %>% 
+  ## call this column n
+  ## have it contain the sum of the value column
+  mutate(df1) %>% names(df1) <- (n) %>% colSums("df1",)
   ### create a new column called `business`
   ## set the value of this column to  be "department stores" 
   ## for the entire data set 
-  function_name() %>%
+  mutate(df1) %>% names(df1) <- (business)
   ## reorder column names to be : business, year, n
-  function_name()
+  data = data %>% select(business, year, n,)
 ```
 
 ```{r merge-data, warning=FALSE} 
 ## Now, combine the two data frames
-df_total <- function_name()
+df_total <- total <- merge("df1","df2",by="ID")
 ```
 
 ```{r plot, warning=FALSE, fig.width=10} 
